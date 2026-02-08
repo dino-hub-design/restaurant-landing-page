@@ -1,4 +1,6 @@
-// ===== MENU DATA (edit here) =====
+// ===============================
+// Data
+// ===============================
 const MENU = [
   { name: "Tomato Bruschetta", desc: "Toasted bread, tomato, basil, olive oil.", price: 7, cat: "starters" },
   { name: "Chicken Caesar Salad", desc: "Crisp romaine, parmesan, house dressing.", price: 9, cat: "starters" },
@@ -10,8 +12,41 @@ const MENU = [
   { name: "Espresso", desc: "Strong, smooth, freshly brewed.", price: 2, cat: "drinks" },
 ];
 
-// ===== SCROLL SPY NAV (accurate) =====
-const navLinks = [...document.querySelectorAll("#nav a")];
+// ===============================
+// Helpers
+// ===============================
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => [...document.querySelectorAll(sel)];
+
+// ===============================
+// Smooth anchor + offset handling
+// ===============================
+function scrollToHash(hash) {
+  const target = document.querySelector(hash);
+  if (!target) return;
+
+  const header = document.querySelector(".topbar");
+  const headerH = header ? header.offsetHeight : 0;
+
+  const y = window.scrollY + target.getBoundingClientRect().top - headerH - 18;
+  window.scrollTo({ top: y, behavior: "smooth" });
+}
+
+// Make nav clicks smooth and accurate
+$$('#nav a').forEach(a => {
+  a.addEventListener("click", (e) => {
+    const href = a.getAttribute("href");
+    if (!href || !href.startsWith("#")) return;
+    e.preventDefault();
+    scrollToHash(href);
+  });
+});
+
+// ===============================
+// Scroll-spy nav (RELIABLE)
+// Picks section closest to viewport center
+// ===============================
+const navLinks = $$("#nav a");
 const sections = navLinks
   .map(a => document.querySelector(a.getAttribute("href")))
   .filter(Boolean);
@@ -22,30 +57,48 @@ function setActiveLink(id) {
   });
 }
 
-const observer = new IntersectionObserver(
-  (entries) => {
-    // Pick the section with the highest visibility
-    const visible = entries
-      .filter(e => e.isIntersecting)
-      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+function updateActiveSection() {
+  const centerY = window.innerHeight / 2;
 
-    if (visible?.target?.id) setActiveLink(visible.target.id);
-  },
-  {
-     root: null,
-  rootMargin: "-45% 0px -45% 0px",
-  threshold: 0.01,
+  let bestSection = null;
+  let bestDistance = Infinity;
+
+  for (const section of sections) {
+    const rect = section.getBoundingClientRect();
+    const sectionCenter = rect.top + rect.height / 2;
+    const distance = Math.abs(sectionCenter - centerY);
+
+    const isVisible = rect.bottom > 80 && rect.top < window.innerHeight - 80;
+    if (isVisible && distance < bestDistance) {
+      bestDistance = distance;
+      bestSection = section;
+    }
   }
-);
 
-sections.forEach(sec => observer.observe(sec));
+  if (bestSection) setActiveLink(bestSection.id);
+}
 
+// Efficient scroll handler
+let ticking = false;
+window.addEventListener("scroll", () => {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => {
+    updateActiveSection();
+    ticking = false;
+  });
+});
 
-// ===== THEME TOGGLE =====
-const themeBtn = document.getElementById("themeBtn");
+window.addEventListener("resize", updateActiveSection);
+updateActiveSection();
+
+// ===============================
+// Theme toggle (vibe)
+// ===============================
+const themeBtn = $("#themeBtn");
 let vibe = 0;
 
-themeBtn.addEventListener("click", () => {
+themeBtn?.addEventListener("click", () => {
   vibe = (vibe + 1) % 2;
   if (vibe === 1) {
     document.documentElement.style.setProperty("--brand", "#f59e0b");
@@ -56,48 +109,56 @@ themeBtn.addEventListener("click", () => {
   }
 });
 
-// ===== GALLERY MODAL =====
-const modal = document.getElementById("modal");
-const modalImg = document.getElementById("modalImg");
-const modalTitle = document.getElementById("modalTitle");
-const modalDesc = document.getElementById("modalDesc");
-const closeBtn = document.getElementById("closeModal");
+// ===============================
+// Gallery modal
+// ===============================
+const modal = $("#modal");
+const modalImg = $("#modalImg");
+const modalTitle = $("#modalTitle");
+const modalDesc = $("#modalDesc");
+const closeBtn = $("#closeModal");
+const openGalleryBtn = $("#openGalleryBtn");
+const shots = $$(".shot");
 
 function closeModal() {
-  modal.classList.remove("open");
-  modal.setAttribute("aria-hidden", "true");
-  modalImg.src = "";
+  modal?.classList.remove("open");
+  modal?.setAttribute("aria-hidden", "true");
+  if (modalImg) modalImg.src = "";
 }
 
 function openShot(shot) {
+  if (!modal || !modalImg) return;
   const img = shot.querySelector("img");
+  if (!img) return;
+
   modalTitle.textContent = shot.dataset.title || "Photo";
   modalDesc.textContent = shot.dataset.desc || "";
   modalImg.src = img.src;
+
   modal.classList.add("open");
   modal.setAttribute("aria-hidden", "false");
 }
 
-closeBtn.addEventListener("click", closeModal);
-modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+closeBtn?.addEventListener("click", closeModal);
+modal?.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
 window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
 
-const shots = [...document.querySelectorAll(".shot")];
 shots.forEach(s => s.addEventListener("click", () => openShot(s)));
+openGalleryBtn?.addEventListener("click", () => { if (shots[0]) openShot(shots[0]); });
 
-document.getElementById("openGalleryBtn").addEventListener("click", () => {
-  if (shots[0]) openShot(shots[0]);
-});
-
-// ===== MENU FILTER + SEARCH =====
-const menuList = document.getElementById("menuList");
-const resultsMsg = document.getElementById("resultsMsg");
-const search = document.getElementById("search");
-const filterRow = document.getElementById("filterRow");
+// ===============================
+// Menu filter + search
+// ===============================
+const menuList = $("#menuList");
+const resultsMsg = $("#resultsMsg");
+const search = $("#search");
+const filterRow = $("#filterRow");
 let activeFilter = "all";
 
 function renderMenu() {
-  const q = search.value.trim().toLowerCase();
+  if (!menuList) return;
+
+  const q = (search?.value || "").trim().toLowerCase();
 
   const filtered = MENU.filter(item => {
     const matchCat = activeFilter === "all" || item.cat === activeFilter;
@@ -115,50 +176,56 @@ function renderMenu() {
     </div>
   `).join("");
 
-  resultsMsg.textContent = filtered.length
-    ? `Showing ${filtered.length} items.`
-    : "No results. Try a different search.";
+  if (resultsMsg) {
+    resultsMsg.textContent = filtered.length
+      ? `Showing ${filtered.length} items.`
+      : "No results. Try a different search.";
+  }
 }
 
-filterRow.addEventListener("click", (e) => {
+filterRow?.addEventListener("click", (e) => {
   const btn = e.target.closest(".pill");
   if (!btn) return;
+
   activeFilter = btn.dataset.filter;
 
-  [...filterRow.querySelectorAll(".pill")].forEach(p => p.classList.remove("active"));
+  $$(".pill").forEach(p => p.classList.remove("active"));
   btn.classList.add("active");
+
   renderMenu();
 });
 
-search.addEventListener("input", renderMenu);
+search?.addEventListener("input", renderMenu);
 renderMenu();
 
-// ===== RESERVATION FORM VALIDATION =====
-const form = document.getElementById("reserveForm");
-const formMsg = document.getElementById("formMsg");
-const dateInput = document.getElementById("date");
+// ===============================
+// Reservation form validation
+// ===============================
+const form = $("#reserveForm");
+const formMsg = $("#formMsg");
+const dateInput = $("#date");
+const fillDemoBtn = $("#fillDemo");
 
-// Min date = today
 const today = new Date();
 const iso = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
   .toISOString()
   .slice(0, 10);
 
-dateInput.min = iso;
+if (dateInput) dateInput.min = iso;
 
 function isPhoneValid(v) {
-  return /^[+\d][\d\s-]{7,}$/.test(v.trim());
+  return /^[+\d][\d\s-]{7,}$/.test((v || "").trim());
 }
 
-form.addEventListener("submit", (e) => {
+form?.addEventListener("submit", (e) => {
   e.preventDefault();
-  formMsg.textContent = "";
+  if (formMsg) formMsg.textContent = "";
 
-  const name = document.getElementById("name").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const date = document.getElementById("date").value;
-  const time = document.getElementById("time").value;
-  const guests = document.getElementById("guests").value;
+  const name = ($("#name")?.value || "").trim();
+  const phone = ($("#phone")?.value || "").trim();
+  const date = ($("#date")?.value || "").trim();
+  const time = ($("#time")?.value || "").trim();
+  const guests = ($("#guests")?.value || "").trim();
 
   if (name.length < 2) return (formMsg.textContent = "Please enter your name.");
   if (!isPhoneValid(phone)) return (formMsg.textContent = "Please enter a valid phone number.");
@@ -166,16 +233,16 @@ form.addEventListener("submit", (e) => {
 
   formMsg.textContent = `✅ Request sent! (${date} at ${time} for ${guests} guests)`;
   form.reset();
-  dateInput.min = iso;
+  if (dateInput) dateInput.min = iso;
 });
 
-document.getElementById("fillDemo").addEventListener("click", () => {
-  document.getElementById("name").value = "Dino";
-  document.getElementById("phone").value = "+387 61 123 456";
-  document.getElementById("date").value = iso;
-  document.getElementById("time").value = "19:30";
-  document.getElementById("guests").value = "2";
-  document.getElementById("occasion").value = "None";
-  document.getElementById("notes").value = "Window seat if possible.";
-  formMsg.textContent = "Demo details filled.";
+fillDemoBtn?.addEventListener("click", () => {
+  $("#name").value = "Dino";
+  $("#phone").value = "+387 61 123 456";
+  $("#date").value = iso;
+  $("#time").value = "19:30";
+  $("#guests").value = "2";
+  $("#occasion").value = "None";
+  $("#notes").value = "Window seat if possible.";
+  if (formMsg) formMsg.textContent = "Demo details filled.";
 });
