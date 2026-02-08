@@ -223,7 +223,7 @@ input, select, textarea{
   border-radius:12px;
   border:1px solid var(--line);
   background: rgba(255,255,255,.04);
-  color:var(--text);
+  color:#02132c;(--text);
   outline:none;
   font-weight:900;
 }
