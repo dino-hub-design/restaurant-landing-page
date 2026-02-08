@@ -1,60 +1,230 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Restaurant Website Demo</title>
-
-  
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Restaurant Landing Page | Demo</title>
+  <meta name="description" content="Interactive restaurant landing page demo built with HTML, CSS, and JavaScript." />
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <div class="container">
+  <header class="topbar">
+    <div class="container">
+      <div class="topbar-inner">
+        <div class="brand">
+          <span class="dot"></span>
+          <span id="siteName">Dino’s Restaurant</span>
+        </div>
 
+        <nav id="nav">
+          <a href="#home" class="active">Home</a>
+          <a href="#features">Features</a>
+          <a href="#menu">Menu</a>
+          <a href="#reserve">Reserve</a>
+        </nav>
+
+        <div class="right-actions">
+          <button class="btn" id="themeBtn" type="button">Toggle vibe</button>
+          <a class="btn primary" href="#reserve">Book a table</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
     <!-- HERO -->
-    <header class="hero">
-      <h1>Restaurant Website Demo</h1>
-      <p>Modern website for cafés & restaurants</p>
-      <a href="#contact" class="btn">Get This Website</a>
-    </header>
+    <section id="home" class="hero">
+      <div class="hero-grid">
+        <div class="panel hero-left">
+          <div class="kicker">✨ Demo • HTML/CSS/JS • Interactive</div>
+          <h1>Restaurant website that feels premium & modern.</h1>
+          <p class="lead">
+            Click photos (modal), filter the menu (search + categories), and submit a reservation request (validation).
+            Perfect for GitHub + Upwork portfolio.
+          </p>
 
-    <!-- INCLUDED -->
-    <section>
-      <h2>What’s Included</h2>
-      <ul>
-        <li>Menu & specialties showcase</li>
-        <li>Opening hours & location</li>
-        <li>Mobile-friendly design</li>
-      </ul>
+          <div class="hero-actions">
+            <a class="btn primary" href="#menu">Explore menu</a>
+            <button class="btn" type="button" id="openGalleryBtn">View gallery</button>
+          </div>
+
+          <div class="meta">
+            <span class="chip">📍 City Center</span>
+            <span class="chip">🕒 10:00–23:00</span>
+            <span class="chip">⭐ 4.8 rating</span>
+          </div>
+        </div>
+
+        <div class="panel hero-right">
+          <div class="gallery" id="gallery">
+            <!-- Put your 4 photos in /images folder with these names -->
+            <figure class="shot" data-title="Signature Dish" data-desc="Plated with care—perfect for social posts.">
+              <img src="photos/appetizer.jpg" alt="Appetizer" />
+              <figcaption class="cap">Signature Dish</figcaption>
+            </figure>
+
+            <figure class="shot" data-title="Cozy Interior" data-desc="Warm lighting and comfortable seating.">
+              <img src="photos/chef.jpg" alt="Chef at Work" />
+              <figcaption class="cap">Cozy Interior</figcaption>
+            </figure>
+
+            <figure class="shot" data-title="Fresh Ingredients" data-desc="Local and seasonal ingredients.">
+              <img src="photos/dish.jpg" alt="Main Dish" />
+              <figcaption class="cap">Fresh Ingredients</figcaption>
+            </figure>
+
+            <figure class="shot" data-title="Dessert Special" data-desc="Sweet finish, unforgettable taste.">
+              <img src="images/photo4.jpg" alt="Restaurant photo 4" />
+              <figcaption class="cap">Dessert Special</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- ABOUT -->
-    <section>
-      <h2>About</h2>
-      <p>
-        A clean, professional website designed for restaurants that want a
-        strong online presence.
-      </p>
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="section-title">
+        <h2>What’s Included</h2>
+        <div class="hint">Scroll-spy nav • Menu filter • Gallery modal • Form validation</div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Responsive layout</h3>
+          <p>Mobile-first layout with clean typography, spacing, and fast loading.</p>
+        </div>
+        <div class="card">
+          <h3>Interactive menu</h3>
+          <p>Search + category filters so visitors find items quickly.</p>
+        </div>
+        <div class="card">
+          <h3>Clickable gallery</h3>
+          <p>Tap photos to open a modal. ESC closes it. Smooth + professional UX.</p>
+        </div>
+      </div>
     </section>
 
-    <!-- CONTACT -->
-    <section id="contact">
-      <h2>Contact</h2>
-      <p>
-        Email:
-        <a href="mailto:dino.dinolegio@gmail.com">
-          dino.dinolegio@gmail.com
-        </a>
-      </p>
+    <!-- MENU -->
+    <section id="menu">
+      <div class="section-title">
+        <h2>Menu</h2>
+        <div class="hint">Try searching: “steak”, “pasta”, “salad”</div>
+      </div>
+
+      <div class="panel menu-wrap">
+        <div class="filters">
+          <label for="search">Search</label>
+          <input class="search" id="search" placeholder="Search menu..." autocomplete="off" />
+
+          <div class="row" id="filterRow">
+            <button class="pill active" data-filter="all" type="button">All</button>
+            <button class="pill" data-filter="starters" type="button">Starters</button>
+            <button class="pill" data-filter="mains" type="button">Mains</button>
+            <button class="pill" data-filter="desserts" type="button">Desserts</button>
+            <button class="pill" data-filter="drinks" type="button">Drinks</button>
+          </div>
+
+          <p class="small-note">
+            Built with vanilla JavaScript (no frameworks). Easy to customize for any business.
+          </p>
+        </div>
+
+        <div class="menu-list">
+          <div id="menuList"></div>
+          <div class="msg" id="resultsMsg"></div>
+        </div>
+      </div>
     </section>
 
+    <!-- RESERVATION -->
+    <section id="reserve">
+      <div class="section-title">
+        <h2>Reserve a Table</h2>
+        <div class="hint">Demo form with validation</div>
+      </div>
+
+      <div class="panel">
+        <form class="form" id="reserveForm">
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" required minlength="2" placeholder="Your name" />
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input id="phone" required placeholder="+387 ..." />
+          </div>
+
+          <div class="field">
+            <label for="date">Date</label>
+            <input id="date" type="date" required />
+          </div>
+
+          <div class="field">
+            <label for="time">Time</label>
+            <select id="time" required>
+              <option value="">Select</option>
+              <option>18:00</option><option>18:30</option><option>19:00</option><option>19:30</option>
+              <option>20:00</option><option>20:30</option><option>21:00</option><option>21:30</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="guests">Guests</label>
+            <select id="guests" required>
+              <option value="">Select</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6+</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="occasion">Occasion</label>
+            <select id="occasion">
+              <option>None</option>
+              <option>Birthday</option>
+              <option>Anniversary</option>
+              <option>Business</option>
+            </select>
+          </div>
+
+          <textarea id="notes" placeholder="Notes (optional): allergies, seating preference..."></textarea>
+
+          <div class="actions">
+            <button class="btn primary" type="submit">Send request</button>
+            <button class="btn" type="button" id="fillDemo">Fill demo</button>
+            <span class="msg" id="formMsg"></span>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      One-page interactive restaurant demo • HTML/CSS/JS • Use it for GitHub + Upwork portfolio
+    </footer>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <div class="modal-top">
+        <strong id="modalTitle">Photo</strong>
+        <button class="close" id="closeModal" type="button">Close ✕</button>
+      </div>
+      <div class="modal-body">
+        <img id="modalImg" src="" alt="Selected photo" />
+        <div class="modal-info">
+          <div class="stars">★★★★★</div>
+          <p class="small" id="modalDesc"></p>
+          <p class="small">
+            Want a page like this? Replace the text + photos and you’re client-ready.
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <p>© 2026 Restaurant Website Demo · Created by Dino</p>
-  </footer>
-
+  <script src="script.js"></script>
 </body>
 </html>
