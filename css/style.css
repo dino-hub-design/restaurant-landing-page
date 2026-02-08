@@ -23,6 +23,9 @@ body{
 a{color:inherit;text-decoration:none}
 .container{max-width:var(--max); margin:0 auto; padding:0 18px}
 
+/* Prevent sticky header covering sections */
+section{scroll-margin-top: 96px; padding:18px 0}
+
 /* Topbar */
 .topbar{
   position:sticky; top:0; z-index:50;
@@ -147,7 +150,6 @@ h1{margin:14px 0 10px; font-size: clamp(28px, 4.2vw, 44px); line-height:1.05}
 }
 
 /* Sections */
-section{padding:18px 0}
 .section-title{
   display:flex; align-items:flex-end; justify-content:space-between;
   gap:12px; margin-bottom:12px;
@@ -186,11 +188,11 @@ h2{margin:0; font-size:22px}
   border-radius:12px;
   border:1px solid var(--line);
   background: rgba(255,255,255,.04);
-  color:var(--text);
+  color:#ffffff;
   outline:none;
-  font-weight:900;
+  font-weight:800;
 }
-.search::placeholder{color: rgba(238,241,247,.45)}
+.search::placeholder{color:#b8c0d4; opacity:1}
 .small-note{margin:10px 0 0; color:var(--muted); font-weight:800; line-height:1.6}
 .menu-list{padding:14px}
 .item{
@@ -217,22 +219,31 @@ h2{margin:0; font-size:22px}
   padding:14px;
 }
 .field{display:flex; flex-direction:column; gap:6px}
-label{font-weight:900; color:var(--muted); font-size:12px}
-input,
-select,
-textarea{
+label{font-weight:800; color:#f5f7fa; font-size:13px}
+
+/* Inputs - readable placeholders + selected text */
+input, select, textarea{
   padding:11px 12px;
   border-radius:12px;
   border:1px solid var(--line);
   background: rgba(255,255,255,.04);
-  color:#ffffff;          /* ← FIX: visible text */
+  color:#ffffff;
   outline:none;
   font-weight:700;
 }
-
+input::placeholder,
+textarea::placeholder{
+  color:#cfd6e4;
+  opacity:1;
 }
 textarea{grid-column:1 / -1; min-height: 90px; resize:vertical}
 .actions{grid-column:1 / -1; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+
+/* Dropdown menu readability */
+select option{
+  background-color:#ffffff;
+  color:#000000;
+}
 
 /* Modal */
 .modal{
@@ -289,20 +300,3 @@ footer{
   .modal-body{grid-template-columns:1fr}
   .modal-body img{min-height: 240px}
 }
-/* ===== Fix dropdown option text contrast ===== */
-select option {
-  background-color: #ffffff;
-  color: #000000;
-}
-
-/* When hovering or selected */
-select option:checked,
-select option:hover {
-  background-color: #e5e7eb;
-  color: #000000;
-}
-section {
-  scroll-margin-top: 90px;
-}
-
-
