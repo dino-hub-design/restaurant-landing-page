@@ -285,3 +285,15 @@ footer{
   .modal-body{grid-template-columns:1fr}
   .modal-body img{min-height: 240px}
 }
+/* ===== Fix dropdown option text contrast ===== */
+select option {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* When hovering or selected */
+select option:checked,
+select option:hover {
+  background-color: #e5e7eb;
+  color: #000000;
+}
