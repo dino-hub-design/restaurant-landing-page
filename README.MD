@@ -1,20 +1,19 @@
-# Restaurant Website Demo
+# Simple Business Landing Page
 
-A clean, responsive one-page website designed for cafés and restaurants.
+A clean, responsive one-page website template built with HTML and CSS.
+Designed for small local businesses or personal projects.
 
 ## Features
-- Modern, mobile-friendly design
-- Menu & specialties showcase
-- Opening hours and contact section
-- Fast loading, simple structure
+- One-page layout
+- Mobile-friendly
+- HTML & CSS only
+- Easy to customize
+- No JavaScript
 
-## Live Demo
-https://dino-hub-design.github.io/restaurant-landing-page/
+## How to use
+1. Download or clone this repository
+2. Open `index.html` in your browser
+3. Edit text and colors in `index.html` and `css/style.css`
 
-## Built With
-- HTML
-- CSS
-- GitHub Pages
-
-## Purpose
-This project is part of my web design portfolio.
+## License
+MIT License — free for personal and commercial use.
