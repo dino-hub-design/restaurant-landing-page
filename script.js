@@ -10,22 +10,37 @@ const MENU = [
   { name: "Espresso", desc: "Strong, smooth, freshly brewed.", price: 2, cat: "drinks" },
 ];
 
-// ===== SCROLL SPY NAV =====
+// ===== SCROLL SPY NAV (accurate) =====
 const navLinks = [...document.querySelectorAll("#nav a")];
-const sections = navLinks.map(a => document.querySelector(a.getAttribute("href")));
+const sections = navLinks
+  .map(a => document.querySelector(a.getAttribute("href")))
+  .filter(Boolean);
 
-function setActiveNav() {
-  const y = window.scrollY + 120;
-  let idx = 0;
-  sections.forEach((sec, i) => {
-    if (sec && sec.offsetTop <= y) idx = i;
+function setActiveLink(id) {
+  navLinks.forEach(a => {
+    a.classList.toggle("active", a.getAttribute("href") === `#${id}`);
   });
-  navLinks.forEach(a => a.classList.remove("active"));
-  navLinks[idx]?.classList.add("active");
 }
 
-window.addEventListener("scroll", setActiveNav);
-setActiveNav();
+const observer = new IntersectionObserver(
+  (entries) => {
+    // Pick the section with the highest visibility
+    const visible = entries
+      .filter(e => e.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+    if (visible?.target?.id) setActiveLink(visible.target.id);
+  },
+  {
+    root: null,
+    // Adjust this if needed (accounts for sticky header)
+    rootMargin: "-35% 0px -55% 0px",
+    threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
+  }
+);
+
+sections.forEach(sec => observer.observe(sec));
+
 
 // ===== THEME TOGGLE =====
 const themeBtn = document.getElementById("themeBtn");
