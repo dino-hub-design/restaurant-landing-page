@@ -301,3 +301,8 @@ select option:hover {
   background-color: #e5e7eb;
   color: #000000;
 }
+section {
+  scroll-margin-top: 90px;
+}
+
+
