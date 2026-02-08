@@ -32,10 +32,9 @@ const observer = new IntersectionObserver(
     if (visible?.target?.id) setActiveLink(visible.target.id);
   },
   {
-    root: null,
-    // Adjust this if needed (accounts for sticky header)
-    rootMargin: "-35% 0px -55% 0px",
-    threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
+     root: null,
+  rootMargin: "-45% 0px -45% 0px",
+  threshold: 0.01,
   }
 );
 
